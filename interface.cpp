@@ -35,7 +35,7 @@ mainWindow::mainWindow()
     //Initialisation des la pile et du manager via les methodes sur singleton
     pile=&(Pile::getInstance());
     lManager=&(litteraleManager::getInstance());
-    controleur=&(Controleur::getInstance());
+    controleur=&(Controleur::getInstance()); //normalement la creation de l'objet historique se fera ici dans le constructeur de Controleur qui passera par le singleton de Historique
 
     bouton0= new QPushButton("0");
     bouton1= new QPushButton("1");

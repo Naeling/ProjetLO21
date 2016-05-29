@@ -9,405 +9,9 @@ lComplexe::~lComplexe() {
     delete reelle;
     delete imaginaire;
 }
-// OPERERATEURS DE CLASSE LITTERALE : INUTILISABLE
-//Cause des avertissements à ne pas prendre en compte à la compilation
-litterale& litterale::operator+(const litterale& op) const { throw ComputerException("erreur l'operations entre deux objets de la classe littérale de base est impossible");}
-litterale& litterale::operator-(const litterale& op) const {throw ComputerException("erreur l'operations entre deux objets de la classe littérale de base est impossible");}
-litterale& litterale::operator*(const litterale& op) const {throw ComputerException("erreur l'operations entre deux objets de la classe littérale de base est impossible");}
-litterale& litterale::operator/(const litterale& op) const {throw ComputerException("erreur l'operations entre deux objets de la classe littérale de base est impossible");}
-
-/*
-// OPERATEURS DE LA CLASSE ENTIERE
-litterale& lEntiere::operator+(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lEntiere(dynamic_cast<const lEntiere&> (op).valeur+valeur));
-    }
-
-    if(op.getType()==2)
-    {
-        int num=dynamic_cast<const lRationnelle&> (op).getNumerateur()+dynamic_cast<const lRationnelle&> (op).getDenominateur()*valeur;
-        int den=dynamic_cast<const lRationnelle&>(op).getDenominateur();
-        return *(new lRationnelle(num, den));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle((float)(valeur+dynamic_cast<const lReelle&>(op).getValeur())));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(dynamic_cast<const lComplexe&>(op).getReelle()+*this),&(dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lEntiere::operator-(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lEntiere(valeur-dynamic_cast<const lEntiere&> (op).valeur));
-
-    }
-    if(op.getType()==2)
-    {
-        int num=dynamic_cast<const lRationnelle&> (op).getDenominateur()*valeur-dynamic_cast<const lRationnelle&> (op).getNumerateur();
-        int den=dynamic_cast<const lRationnelle&>(op).getDenominateur();
-        return *(new lRationnelle(num, den));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle((float)(valeur-dynamic_cast<const lReelle&>(op).getValeur())));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this-dynamic_cast<const lComplexe&>(op).getReelle()),&(dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-
-litterale& lEntiere::operator* (const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lEntiere(dynamic_cast<const lEntiere&> (op).valeur*valeur));
-    }
-    if(op.getType()==2)
-    {
-        int num=valeur*dynamic_cast<const lRationnelle&> (op).getNumerateur();
-        int den=dynamic_cast<const lRationnelle&>(op).getDenominateur();
-        if (den==1) return *(new lEntiere(num));
-                else  return *(new lRationnelle(num, den));
-    }
-    // test a faire sur le signe de la litterale pour savoir quel traitement appliquer
-    if(op.getType()==3)
-    {
-       return *(new lReelle((float)((float)valeur*dynamic_cast<const lReelle&>(op).getValeur())));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this*dynamic_cast<const lComplexe&>(op).getReelle()),&(*this*dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
 
 
-litterale& lEntiere::operator/(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        if(valeur%dynamic_cast<const lEntiere&>(op).valeur==0)
-            return *(new lEntiere(valeur/dynamic_cast<const lEntiere&>(op).valeur));
-        else return *(new lRationnelle(valeur, dynamic_cast<const lEntiere&>(op).valeur));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lRationnelle(dynamic_cast<const lRationnelle&>(*this*lRationnelle(dynamic_cast<const lRationnelle&>(op).getDenominateur(),dynamic_cast<const lRationnelle&>(op).getNumerateur()))));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle(dynamic_cast<const lReelle&>(op).getValeur()*(float)valeur));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this/dynamic_cast<const lComplexe&>(op).getReelle()),&(*this/dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-//OPERATEURS DE LA CLASSE RATIONNELLE
-litterale& lRationnelle::operator+(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return dynamic_cast<const lEntiere&>(op)+*this;
-    }
-    if(op.getType()==2)
-    {
-        return *(new lRationnelle(dynamic_cast<const lRationnelle&>(op).getDenominateur()*numerateur+denominateur*dynamic_cast<const lRationnelle&>(op).getNumerateur(),dynamic_cast<const lRationnelle&>(op).getDenominateur()*denominateur));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle(dynamic_cast<const lReelle&>(op).getValeur()+((float)numerateur/(float)denominateur)));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this+dynamic_cast<const lComplexe&>(op).getReelle()), &(dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
- litterale& lRationnelle::operator-(const litterale& op) const
- {
-     if(op.getType()==1)
-     {
-        int num=numerateur-dynamic_cast<const lEntiere&> (op).getValeur()*denominateur;
-        return *(new lRationnelle(num, denominateur));
-     }
-     if(op.getType()==2)
-    {
-         return *(new lRationnelle(dynamic_cast<const lRationnelle&>(op).getDenominateur()*numerateur-denominateur*dynamic_cast<const lRationnelle&>(op).getNumerateur(),dynamic_cast<const lRationnelle&>(op).getDenominateur()*denominateur));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle((((float)numerateur/(float)denominateur))-dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this-dynamic_cast<const lComplexe&>(op).getReelle()), &(dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
- }
- litterale& lRationnelle::operator*(const litterale& op) const
-{
-    if(op.getType()==1)
-    {   //grosse reserve sur **this qui est censé faire la multiplication mais j'ai peur qu'il voit ça comme déréférencement même si il compile
-        return dynamic_cast<const lEntiere&>(op)**this;
-    }
-    if(op.getType()==2)
-    {
-        return *(new lRationnelle(dynamic_cast<const lRationnelle&>(op).getNumerateur()*numerateur,dynamic_cast<const lRationnelle&>(op).getDenominateur()*denominateur));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle((((float)numerateur/(float)denominateur))*dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this*dynamic_cast<const lComplexe&>(op).getReelle()),&(*this*dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lRationnelle::operator/(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-         return *(new lRationnelle(numerateur,dynamic_cast<const lEntiere&>(op).getValeur()*denominateur));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lRationnelle(dynamic_cast<const lRationnelle&>(*this*lRationnelle(dynamic_cast<const lRationnelle&>(op).getDenominateur(),dynamic_cast<const lRationnelle&>(op).getNumerateur()))));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle((float)numerateur/(float)denominateur/dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this/dynamic_cast<const lComplexe&>(op).getReelle()),&(*this/dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-//OPERATEURS DE LA CLASSE REELLE
-litterale& lReelle::operator+(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return dynamic_cast<const lEntiere&>(op)+*this;
-    }
-    if(op.getType()==2)
-    {
-        return dynamic_cast<const lRationnelle&> (op)+*this;
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle(valeur+dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(dynamic_cast<const lComplexe&>(op).getReelle()+*this),&(dynamic_cast<const lComplexe&>(op).getIm())));
-    }
-    else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lReelle::operator-(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-         return *(new lReelle(valeur-(float)(dynamic_cast<const lRationnelle&>(op).getNumerateur())/(float)(dynamic_cast<const lRationnelle&>(op).getDenominateur())));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lReelle(valeur-(float)(dynamic_cast<const lRationnelle&>(op).getNumerateur())/(float)(dynamic_cast<const lRationnelle&>(op).getDenominateur())));
-    }
-   if(op.getType()==3)
-    {
-        return *(new lReelle(valeur-dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this-dynamic_cast<const lComplexe&>(op).getReelle()),&(dynamic_cast<const lComplexe&> (op).getIm())));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lReelle::operator*(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return dynamic_cast<const lEntiere&>(op)**this;
-    }
-    if(op.getType()==2)
-    {
-        return dynamic_cast<const lRationnelle&>(op)**this;
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle(valeur*dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this*dynamic_cast<const lComplexe&>(op).getReelle()),&(*this*dynamic_cast<const lComplexe&> (op).getIm())));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lReelle::operator/(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lReelle(valeur*(float)dynamic_cast<const lEntiere&>(op).getValeur()));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lReelle(dynamic_cast<const lReelle&>(*this*lRationnelle(dynamic_cast<const lRationnelle&>(op).getDenominateur(),dynamic_cast<const lRationnelle&>(op).getNumerateur()))));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lReelle(valeur*dynamic_cast<const lReelle&>(op).getValeur()));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(&(*this/dynamic_cast<const lComplexe&>(op).getReelle()),&(*this/dynamic_cast<const lComplexe&> (op).getIm())));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-//OPERATEURS DE LA CLASSE COMPLEXE
-litterale& lComplexe::operator+(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lComplexe(dynamic_cast<const lEntiere&>(op)+*reelle,*imaginaire));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lComplexe(dynamic_cast<const lRationnelle&>(op)+*reelle, *imaginaire));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lComplexe(*reelle+dynamic_cast<const lReelle&>(op), *imaginaire));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(*reelle+dynamic_cast<const lComplexe&>(op).getReelle(), *imaginaire+dynamic_cast<const lComplexe&>(op).getIm()));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lComplexe::operator-(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lComplexe(*reelle-dynamic_cast<const lEntiere&>(op),*imaginaire));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lComplexe(*reelle-dynamic_cast<const lRationnelle&>(op),*imaginaire));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lComplexe(*reelle-dynamic_cast<const lReelle&>(op), *imaginaire));
-    }
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(*reelle-dynamic_cast<const lComplexe&>(op).getReelle(),*imaginaire-dynamic_cast<const lComplexe&>(op).getIm()));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lComplexe::operator*(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lComplexe(*reelle*dynamic_cast<const lEntiere&>(op),*imaginaire*dynamic_cast<const lEntiere&>(op)));
-    }
-    if(op.getType()==2)
-    {
-        return *(new lComplexe(*reelle*dynamic_cast<const lRationnelle&>(op),*imaginaire*dynamic_cast<const lRationnelle&>(op)));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lComplexe(*reelle*dynamic_cast<const lReelle&>(op),*imaginaire*dynamic_cast<const lReelle&>(op)));
-    }
-    //OPERATION ICI FAUSSE, LA MULTIPLICATION DE DEUX COMPLEXES EST PLUS COMPLIQUEE QUE CA
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(*reelle*dynamic_cast<const lComplexe&>(op).getReelle(),*imaginaire*dynamic_cast<const lComplexe&>(op).getIm()));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-litterale& lComplexe::operator/(const litterale& op) const
-{
-    if(op.getType()==1)
-    {
-        return *(new lComplexe(*reelle/dynamic_cast<const lEntiere&>(op),*imaginaire/dynamic_cast<const lEntiere&>(op)));
-    }
-     if(op.getType()==2)
-    {
-        return *(new lComplexe(*reelle/dynamic_cast<const lRationnelle&>(op),*imaginaire/dynamic_cast<const lRationnelle&>(op)));
-    }
-    if(op.getType()==3)
-    {
-        return *(new lComplexe(*reelle/dynamic_cast<const lReelle&>(op),*imaginaire/dynamic_cast<const lReelle&>(op)));
-    }
-    //OPERATION ICI FAUSSE, LA DIVISION DE DEUX COMPLEXES EST PLUS COMPLIQUEE QUE CA
-    if(op.getType()==4)
-    {
-        return *(new lComplexe(*reelle*dynamic_cast<const lComplexe&>(op).getReelle(),*imaginaire*dynamic_cast<const lComplexe&>(op).getIm()));
-    }
-     else
-    {
-        throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-    }
-}
-*/
+
 litterale& litteraleManager::addition(litterale& op1, litterale& op2) {
     //addition avec op1 ENTIER
     if(op1.getType()==1) {
@@ -859,11 +463,31 @@ litterale& Pile::top() const
 }
 
 
+void Historique::agrandissementCapacite() {
+    Pile** newtab=new Pile * [(nbMax+1)*2];
+    for(unsigned int i=0; i<nb; i++) newtab[i]=historique[i];
+    Pile**  old=historique;
+    historique=newtab;
+    nbMax=(nbMax+1)*2;
+    delete [] old;
 
+}
 
 litteraleManager::Handler litteraleManager::handler=litteraleManager::Handler();
 Pile::Handler Pile::handler=Pile::Handler();
 Controleur::Handler Controleur::handler=Controleur::Handler();
+Historique::Handler Historique::handler=Historique::Handler();
+
+Historique& Historique::getInstance() {
+    if(handler.instance==0)
+        handler.instance=new Historique;
+    return *handler.instance;
+}
+
+void Historique::libererInstance() {
+    delete handler.instance;
+    handler.instance=0;
+}
 
 Controleur& Controleur::getInstance(){
     if(handler.instance==0)
@@ -886,6 +510,7 @@ void Pile::libererInstance(){
     delete handler.instance;
     handler.instance=0;
 }
+
 
 litteraleManager& litteraleManager::getInstance(){
     if (handler.instance==0) handler.instance=new litteraleManager;
@@ -952,6 +577,10 @@ void litteraleManager::removeLitterale(litterale& e){
         ++it;
     }
     //pas de test de sortie à faire, si on a pas la bonne valeur on ne sort pas
+    if((*it)->getType()==4){ //si c'est un complexe on doit d'abord supprimer les parties Reelle et imaginaire
+        delete &dynamic_cast<const lComplexe*>(*it)->getReelle();
+        delete &dynamic_cast<const lComplexe*>(*it)->getIm();
+    }
     delete *it;
     nb--;
     //on a supprimé le ieme-1 élément
@@ -985,6 +614,11 @@ bool estUnOperateur(const QString s){
     if (s=="*") return true;
     if (s=="/") return true;
     if (s=="$") return true;
+    if(s=="DROP") return true;
+    if(s=="SWAP") return true;
+    if(s=="CLEAR") return true;
+    if(s=="DUP") return true;
+    if(s=="UNDO") return true;
     return false;
 }
 
@@ -995,12 +629,38 @@ void Controleur::commande(const QString& c){
     //on suppose qu'on récupère un entier et qu'on l'empile
     //créé et empile la nouvelle littérale sur la pile
     if(estUnNombre(c))   {
+        log->push(*littAff); //empilement de la pile dans l'historique
         if(c.toInt()) littAff->push(littMng->addLitterale(c.toInt()));
         else littAff->push(littMng->addLitterale(c.toFloat()));
     }
     //si on a saisit un opérateur alors on depile deux littérales, on fait le calcul et on empile le résultat
     if(estUnOperateur(c))
     {
+
+        log->push(*littAff); //empilement de la pile dans l'historique en vue d'un changement d'état
+        if(c.toStdString()=="UNDO" && !log->estVide()) {
+
+        }
+        if(littAff->taille()>=1)
+        {
+            if(c.toStdString()=="DROP") {
+                litterale& detruire=littAff->top();
+                littAff->pop();
+                littMng->removeLitterale(detruire);
+            }
+            if(c.toStdString()=="CLEAR") {
+                while(!littAff->estVide()) {
+                   litterale& detruire=littAff->top();
+                   littAff->pop();
+                   littMng->removeLitterale(detruire);
+                }
+            }
+            if(c.toStdString()=="DUP") { //NOTE: on ne duplique pas la litterale dans l'expressionManager
+                litterale& copie=littAff->top();
+                littAff->push(copie);
+            }
+        }
+
         //on teste si on a au moins deux opérateurs
         if(littAff->taille()>=2)
         {
@@ -1011,10 +671,10 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(op2+op1));
+                littAff->push(littMng->addLitterale(littMng->addition(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
-                   littMng->removeLitterale(op2);
+                  littMng->removeLitterale(op2);
                 }
 
 
@@ -1025,7 +685,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(op2-op1));
+                littAff->push(littMng->addLitterale(littMng->soustraction(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
@@ -1038,7 +698,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(op2*op1));
+                littAff->push(littMng->addLitterale(littMng->multiplication(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
@@ -1050,7 +710,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(op2/op1));
+                littAff->push(littMng->addLitterale(littMng->division(op2,op1)));
                 if(littAff->top().getType()!=4){
                    littMng->removeLitterale(op1);
                    littMng->removeLitterale(op2);
@@ -1068,6 +728,14 @@ void Controleur::commande(const QString& c){
                 //car la littérale complexe pointe sur ces littérales
                 //littMng->removeLitterale(op1);
                 //littMng->removeLitterale(op2);
+            }
+            if(c.toStdString()=="SWAP") {
+                litterale& op1=littAff->top();
+                littAff->pop();
+                litterale& op2=littAff->top();
+                littAff->pop();
+                littAff->push(op1);
+                littAff->push(op2);
             }
             //littAff->setMessage("operation réalisée avec succès");
             //modificationEtat();

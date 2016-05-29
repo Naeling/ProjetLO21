@@ -34,10 +34,6 @@ class litterale
 public:
 
    virtual unsigned int getType() const =0;
-   virtual litterale& operator+(const litterale& op) const;
-   virtual litterale& operator-(const litterale& op) const;
-   virtual litterale& operator/(const litterale& op) const;
-   virtual litterale& operator*(const litterale& op) const;
    virtual  ~litterale();
 protected:
     unsigned int type;
@@ -52,12 +48,6 @@ public:
     unsigned int getType () const {return type;}
     lEntiere(int val): valeur(val) {type=1;}
     int getValeur() const {return valeur;}
-
-
-    virtual litterale& operator+(const litterale& op1) const;
-    virtual litterale& operator-(const litterale& op1) const;
-    virtual litterale& operator*(const litterale& op1) const;
-    virtual litterale& operator/(const litterale& op1) const;
     ~lEntiere();
 private:
     int valeur;
@@ -74,10 +64,6 @@ public:
     int getNumerateur() const {return numerateur;}
     int getDenominateur() const {return denominateur;}
     lRationnelle (int num, int den): numerateur(num), denominateur(den)  {type=2;}
-    litterale& operator+(const litterale& op) const;
-    litterale& operator-(const litterale& op) const;
-    litterale& operator*(const litterale& op) const;
-    litterale& operator/(const litterale& op) const;
     ~lRationnelle();
 private:
 
@@ -93,10 +79,6 @@ public:
     unsigned int getType() const {return type;}
     float getValeur() const {return valeur;}
     lReelle(float val): valeur(val)   {   type=3;    }
-    litterale& operator+(const litterale& op) const;
-    litterale& operator-(const litterale& op) const;
-    litterale& operator*(const litterale& op) const;
-    litterale& operator/(const litterale& op) const;
     ~lReelle();
 private:
     float valeur;
@@ -123,10 +105,6 @@ public:
     }
     litterale& getReelle() const {return *reelle;}
     litterale& getIm () const {return *imaginaire;}
-    litterale& operator+(const litterale& op) const;
-    litterale& operator-(const litterale& op) const;
-    litterale& operator*(const litterale& op) const;
-    litterale& operator/(const litterale& op) const;
     ~lComplexe();
 
 private:
@@ -243,6 +221,7 @@ public:
         //donne un iterateur sur le bas de la pile
         iterator end() { return iterator(tab-1); }
 
+
 signals:
     void modificationEtat();
 
@@ -314,7 +293,36 @@ public:
 
 //probablement 1 controleur unique relié à la fenetre globale
 //singleton ?
+class Historique :public QObject {
+private:
+    Pile** historique;
+    unsigned int nb;
+    unsigned int nbMax;
+public:
+    //initialiser pour accueillir 10 piles
+    Historique(unsigned int max=10): historique(new Pile* [max]), nb(0), nbMax(max) {}
+    unsigned int taille() const {return nb;}
+    bool estVide() const {return nb>0;}
+    void agrandissementCapacite();
+    void push(Pile& nouveau){
+        if(nb==nbMax) agrandissementCapacite();
+        historique[nb++]=&nouveau;
+    }
+    Pile* current() const {
 
+
+    }
+    struct Handler{
+        Historique* instance;
+        Handler():instance(0){}
+        // destructeur appelé à la fin du programme
+        ~Handler(){ delete instance; }
+    };
+
+    static Handler handler;
+    static Historique& getInstance();
+    static void libererInstance();
+};
 
 //le controleur est utilisé à la fois pour l'affichage
 //et le traitement des expressions passés par le QLineEdit
@@ -324,6 +332,7 @@ private:
 
     litteraleManager* littMng;
     Pile* littAff;
+    Historique* log;
     struct Handler{
         Controleur* instance;
         Handler():instance(0){}
@@ -338,6 +347,7 @@ public:
     {
         littMng= &(litteraleManager::getInstance());
         littAff= &(Pile::getInstance());
+        log= &(Historique::getInstance());
     }
 
     static Controleur& getInstance();
@@ -347,6 +357,7 @@ public:
 signals:
     void modificationEtat();
 };
+
 
 
 #endif // COMPUTER_H_INCLUDED
