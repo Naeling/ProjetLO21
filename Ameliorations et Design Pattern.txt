@@ -1,0 +1,5 @@
+class Historique:
+*implémenter un singleton
+
+opérations:
+*implémenter une méthode de simplification des fractions

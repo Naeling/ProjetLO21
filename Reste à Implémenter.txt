@@ -1,0 +1,19 @@
+Les operateurs suivants:
+
+MOD
+DIV
+LASTOP
+LASTARGS
+UNDO
+REDO
+NUM
+DEN
+RE
+IM
+
+CONCERNANT LES OPERATEURS UNDO ET REDO:
+il faudrait mettre en place une nouvelle structure de données qui servirait à enregistrer toutes les modifications de la pile
+Ou encore mieux mais pas optimal on pourrait dupliquer la pile à chaque opération.
+Avant d'effectuer une modification de la pile on la duplique et on la stocke dans un historique.
+En cas d'appel à UNDO remplace la pile actuelle par la derniere version de la pile enregistrée dans l'historique => IZY
+Degager le singleton de la pile et implementer un constructeur de recopie dans la classe Pile
