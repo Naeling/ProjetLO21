@@ -144,6 +144,26 @@ private:
 
 
 //constructeur pour cette classe à implémenter par la suite en étudiant un peu plus le fonctionnement du truc
+class Expression {
+
+
+
+};
+class Addition: public litterale {
+private:
+    litterale& op1;
+    litterale& op2;
+public:
+    Addition(litterale& terme1, litterale& terme2):op1(terme1), op2(terme2){}
+    litterale& valeur() const {
+        return addition(op1,op2);
+    }
+    litterale& addition(op1,op2) const;
+
+
+};
+
+
 
 class lExpression: public litterale
 {
