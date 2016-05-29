@@ -1,6 +1,7 @@
 #ifndef COMPUTER_H_INCLUDED
 #define COMPUTER_H_INCLUDED
 //tyftuftyfjy
+// yoyoyoyoyoyoy
 #include <iostream>
 #include <sstream>
 #include <QApplication>
