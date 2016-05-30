@@ -35,6 +35,7 @@ class litterale
 public:
 
    virtual unsigned int getType() const =0;
+   virtual litterale& evaluer()  {} //la methode n'est pas declarée virtuelle car inutile dans les classes feuilles à l'heure actuelle
    virtual  ~litterale();
 protected:
     unsigned int type;
@@ -145,47 +146,46 @@ private:
 
 
 //constructeur pour cette classe à implémenter par la suite en étudiant un peu plus le fonctionnement du truc
-class Expression {
 
-
-
-};
 class Addition: public litterale {
 private:
     litterale& op1;
     litterale& op2;
 public:
     Addition(litterale& terme1, litterale& terme2):op1(terme1), op2(terme2){}
-    litterale& valeur() const {
-        return addition(op1,op2);
-    }
-    litterale& addition(op1,op2) const;
-
-
+    litterale& evaluer()  {return addition(op1,op2);}
+    static litterale& addition(litterale& op1, litterale& op2 ); // il est prevu que l'on puisse appeler l'operation sur autre chose que ses propres valeurs, notamment sur l'evaluation d'un descendant
 };
-
-
-
-class lExpression: public litterale
-{
-public:
-
-    unsigned int getType() const { return type;}
-    ~lExpression();
+class Soustraction: public litterale {
 private:
-
-
-    // tableau pour stocker les litterales de l'expression
-    //nil pour signifier qu'on a un opérateur à la position concernée
-    litterale** tab1;
-    unsigned int nbr_tab1;
-    unsigned int taille_tab1;
-
-    //tableau pour stocker les operateurs et parenthèses
-    char** tab2;
-    unsigned int nbr_tab2;
-    unsigned int taille_tab2;
+    litterale& op1;
+    litterale& op2;
+public:
+    Soustraction(litterale& terme1, litterale& terme2):op1(terme1), op2(terme2) {}
+    litterale& evaluer() {return soustraction(op1,op2);}
+    static litterale& soustraction(litterale& op1, litterale& op2);
 };
+class Multiplication: public litterale {
+private:
+    litterale& op1;
+    litterale& op2;
+public:
+    Multiplication(litterale& terme1, litterale& terme2):op1(terme1),op2(terme2) {}
+    litterale& evaluer()  {return multiplication(op1,op2);}
+    static litterale& multiplication(litterale& op1, litterale& op2);
+};
+class Division: public litterale {
+private:
+    litterale& op1;
+    litterale& op2;
+public:
+    Division(litterale& terme1, litterale& terme2): op1(terme1),op2(terme2) {}
+    litterale& evaluer()  {return division(op1,op2);}
+    static litterale& division(litterale& op1, litterale& op2);
+};
+
+
+
 
 //Implémenter un Design Pattern Singleton
 class Pile: public QObject

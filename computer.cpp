@@ -11,6 +11,13 @@ lComplexe::~lComplexe() {
 }
 litterale& Addition::addition(litterale& op1, litterale& op2) {
     //addition avec op1 ENTIER
+    if(op1.getType()>4) {
+        if(op2.getType()>4) { // les deux membres sont composites
+            return addition(op1.evaluer(),op2.evaluer());
+        }   return addition(op1.evaluer(),op2); //seul op1 est composite
+    } else if(op2.getType()>4) {
+            return addition(op1,op2.evaluer()); //seul op2 est composite
+    }      //sinon on est dans un cas classique d'operation entre deux feuilles comme ci dessous
     if(op1.getType()==1) {
         if(op2.getType()==1)
         {
@@ -33,8 +40,8 @@ litterale& Addition::addition(litterale& op1, litterale& op2) {
         }
         else
         {
-            //ici le deuxieme argument est un composite, il faut donc faire intervenir une methode decomposition du composite en fractions plus petites
-
+            //si un argument est composite on appelle evaluer pour determiner sa valeur avant de faire le calcul
+            return addition(op1, op2.evaluer());
         }
     }
     //addition avec op1 RATIONNELLE
@@ -60,7 +67,7 @@ litterale& Addition::addition(litterale& op1, litterale& op2) {
         }
         else
         {
-            throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
+            return addition(op1, op2.evaluer());
         }
     }
    //addition avec Reelle
@@ -115,111 +122,15 @@ litterale& Addition::addition(litterale& op1, litterale& op2) {
 }
 
 
-litterale& litteraleManager::addition(litterale& op1, litterale& op2) {
-    //addition avec op1 ENTIER
-    if(op1.getType()==1) {
-        if(op2.getType()==1)
-        {
-            return *(new lEntiere(dynamic_cast<const lEntiere&>(op2).getValeur()+dynamic_cast<const lEntiere&>(op1).getValeur()));
-        }
-
-        if(op2.getType()==2)
-        {
-            int num=dynamic_cast<const lRationnelle&> (op2).getNumerateur()+dynamic_cast<const lRationnelle&> (op2).getDenominateur()*dynamic_cast<const lEntiere&>(op1).getValeur();
-            int den=dynamic_cast<const lRationnelle&>(op2).getDenominateur();
-            return *(new lRationnelle(num, den));
-        }
-        if(op2.getType()==3)
-        {
-            return *(new lReelle((float)(dynamic_cast<const lEntiere&>(op1).getValeur()+dynamic_cast<const lReelle&>(op2).getValeur())));
-        }
-        if(op2.getType()==4)
-        {
-            return *(new lComplexe(&(addition(dynamic_cast<const lComplexe&>(op2).getReelle(),op1)),&(dynamic_cast<const lComplexe&>(op2).getIm())));
-        }
-        else
-        {
-            throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-        }
-    }
-    //addition avec op1 RATIONNELLE
-    if(op1.getType()==2) {
-        if(op2.getType()==1)
-        {
-            return addition(op2,op1);
-        }
-        if(op2.getType()==2)
-        {
-            return *(new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur()*dynamic_cast<const lRationnelle&>(op1).getNumerateur()+
-                                      dynamic_cast<const lRationnelle&>(op1).getDenominateur()*dynamic_cast<const lRationnelle&>(op2).getNumerateur(),
-                                      dynamic_cast<const lRationnelle&>(op2).getDenominateur()*dynamic_cast<const lRationnelle&>(op1).getDenominateur()));
-        }
-        if(op2.getType()==3)
-        {
-            return *(new lReelle(dynamic_cast<const lReelle&>(op2).getValeur()+((float)dynamic_cast<const lRationnelle&>(op1).getNumerateur()/
-                                                                                (float)dynamic_cast<const lRationnelle&>(op1).getDenominateur())));
-        }
-        if(op2.getType()==4)
-        {
-            return *(new lComplexe(&(addition(op1,dynamic_cast<const lComplexe&>(op2).getReelle())), &(dynamic_cast<const lComplexe&>(op2).getIm())));
-        }
-        else
-        {
-            throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-        }
-    }
-   //addition avec Reelle
-   if(op1.getType()==3)   {
-        if(op2.getType()==1)
-        {
-            return addition(op2,op1);
-        }
-        if(op2.getType()==2)
-        {
-            float num=dynamic_cast<const lRationnelle&> (op2).getNumerateur()+dynamic_cast<const lRationnelle&> (op2).getDenominateur()*dynamic_cast<const lReelle&>(op1).getValeur();
-            float den=dynamic_cast<const lRationnelle&>(op2).getDenominateur();
-            return *(new lRationnelle(num, den));
-        }
-        if(op2.getType()==3)
-        {
-            return *(new lReelle(dynamic_cast<const lReelle&>(op1).getValeur()+dynamic_cast<const lReelle&>(op2).getValeur()));
-        }
-        if(op2.getType()==4)
-        {
-            return *(new lComplexe(&addition(dynamic_cast<const lComplexe&>(op2).getReelle(),op1),&(dynamic_cast<const lComplexe&>(op2).getIm())));
-        }
-        else
-        {
-            throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-        }
-    }
-    if(op1.getType()==4)
-       if(op2.getType()==1)
-       {
-           return *(new lComplexe(&addition(op2,dynamic_cast<const lComplexe&>(op1).getReelle()),&(dynamic_cast<const lComplexe&>(op1).getIm())));
-       }
-       if(op2.getType()==2)
-       {
-           return *(new lComplexe(&addition(op2,dynamic_cast<const lComplexe&>(op1).getReelle()),&(dynamic_cast<const lComplexe&>(op1).getIm())));
-       }
-       if(op2.getType()==3)
-       {
-           return *(new lComplexe(&addition(dynamic_cast<const lComplexe&>(op1).getReelle(),op2),
-                                  &(dynamic_cast<const lComplexe&>(op1).getIm())));
-       }
-       if(op2.getType()==4)
-       {
-           return *(new lComplexe(&addition(dynamic_cast<const lComplexe&>(op1).getReelle(),dynamic_cast<const lComplexe&>(op2).getReelle()),
-                                  &addition(dynamic_cast<const lComplexe&>(op1).getIm(),dynamic_cast<const lComplexe&>(op2).getIm())));
-       }
-        else
-       {
-           throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
-       }
-
-}
-litterale& litteraleManager::soustraction(litterale& op1, litterale&op2) {
+litterale& Soustraction::soustraction(litterale& op1, litterale&op2)  {
     //soustraction avec op1 ENTIER
+    if(op1.getType()>4) {
+        if(op2.getType()>4) { // les deux membres sont composites
+            return soustraction(op1.evaluer(),op2.evaluer());
+        }   return soustraction(op1.evaluer(),op2); //seul op1 est composite
+    } else if(op2.getType()>4) {
+            return soustraction(op1,op2.evaluer()); //seul op2 est composite
+    }      //sinon on est dans un cas classique d'operation entre deux feuilles comme ci dessous
     if(op1.getType()==1) {
         if(op2.getType()==1)
         {
@@ -249,7 +160,9 @@ litterale& litteraleManager::soustraction(litterale& op1, litterale&op2) {
     if(op1.getType()==2) {
         if(op2.getType()==1)
         {
-            return addition(op2,op1);
+            int num=dynamic_cast<const lRationnelle&> (op1).getNumerateur()-dynamic_cast<const lRationnelle&> (op1).getDenominateur()*dynamic_cast<const lEntiere&>(op2).getValeur();
+            int den=dynamic_cast<const lRationnelle&>(op1).getDenominateur();
+            return *(new lRationnelle(num, den));
         }
         if(op2.getType()==2)
         {
@@ -321,7 +234,7 @@ litterale& litteraleManager::soustraction(litterale& op1, litterale&op2) {
            throw ComputerException("Erreur l'opérations entre les littérales demandées est inexistante, merci de saisir une opération valide");
        }
 }
-litterale& litteraleManager::multiplication(litterale& op1, litterale&op2) {
+litterale& Multiplication::multiplication(litterale& op1, litterale&op2) {
     if(op1.getType()==1) {
         if(op2.getType()==1)
         {
@@ -414,10 +327,10 @@ litterale& litteraleManager::multiplication(litterale& op1, litterale&op2) {
         //(a+ib)(c+id)=(ac-bd)+i(ad+bc)
         if(op2.getType()==4)
         {
-            return *(new lComplexe(&soustraction
+            return *(new lComplexe(&Soustraction::soustraction
                                    (multiplication(dynamic_cast<const lComplexe&>(op1).getReelle(),dynamic_cast<const lComplexe&>(op2).getReelle()),
                                     multiplication(dynamic_cast<const lComplexe&>(op1).getIm(),dynamic_cast<const lComplexe&>(op2).getIm())),
-                                   &addition
+                                   &Addition::addition
                                    (multiplication(dynamic_cast<const lComplexe&>(op1).getReelle(),dynamic_cast<const lComplexe&>(op2).getIm()),
                                     multiplication(dynamic_cast<const lComplexe&>(op1).getIm(),dynamic_cast<const lComplexe&>(op2).getReelle()))));
         }
@@ -427,7 +340,7 @@ litterale& litteraleManager::multiplication(litterale& op1, litterale&op2) {
         }
     }
 }
-litterale& litteraleManager::division(litterale& op1, litterale&op2) {
+litterale& Division::division(litterale& op1, litterale&op2) {
     if(op1.getType()==1) {
         if(op2.getType()==1)
         {
@@ -438,7 +351,7 @@ litterale& litteraleManager::division(litterale& op1, litterale&op2) {
         if(op2.getType()==2)
         {   //diviser c'est multiplier par l'inverse
 
-            return *(new lRationnelle(dynamic_cast<const lRationnelle&>(multiplication(op1,
+            return *(new lRationnelle(dynamic_cast<const lRationnelle&>(Multiplication::multiplication(op1,
                    *(new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur(),dynamic_cast<const lRationnelle&>(op2).getNumerateur()))))));
         }
         if(op2.getType()==3)
@@ -461,7 +374,7 @@ litterale& litteraleManager::division(litterale& op1, litterale&op2) {
         }
         if(op2.getType()==2)
         {   //diviser c'est multiplier par l''inverse #j'aimelesmaths
-            return *(new lRationnelle(dynamic_cast<const lRationnelle&>(multiplication(op1,*new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur(),dynamic_cast<const lRationnelle&>(op2).getNumerateur())))));
+            return *(new lRationnelle(dynamic_cast<const lRationnelle&>(Multiplication::multiplication(op1,*new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur(),dynamic_cast<const lRationnelle&>(op2).getNumerateur())))));
         }
         if(op2.getType()==3)
         {
@@ -484,7 +397,7 @@ litterale& litteraleManager::division(litterale& op1, litterale&op2) {
         }
         if(op2.getType()==2)
         {
-            return *(new lReelle(dynamic_cast<const lReelle&>(multiplication(op1, *new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur(),dynamic_cast<const lRationnelle&>(op2).getNumerateur())))));
+            return *(new lReelle(dynamic_cast<const lReelle&>(Multiplication::multiplication(op1, *new lRationnelle(dynamic_cast<const lRationnelle&>(op2).getDenominateur(),dynamic_cast<const lRationnelle&>(op2).getNumerateur())))));
         }
         if(op2.getType()==3)
         {
