@@ -1,6 +1,7 @@
 #ifndef COMPUTER_H_INCLUDED
 #define COMPUTER_H_INCLUDED
 //tyftuftyfjy
+// yoyoyoyoyoyoy
 #include <iostream>
 #include <sstream>
 #include <QApplication>
@@ -28,11 +29,17 @@ public:
 // on doit avoir une virtuelle pure dans litterale
 // on a donc un getType qui va retourner un entier correspondant au type réel de la littérale
 
+unsigned int traitement(string expression);
+//operations de conversion de string vers QString un peu bizarre et pas optimale
+//besoin d'utiliser toInt, flemme de cherche l'equivalent pour les std::string
+bool estUnEntier(string expression);
+bool estUnReel(string expression);
+
 //PENSER A SURCHARCHER LES DESTRUCTEURS EN VIRTUEL
 class litterale
 {
 public:
-
+   //litterale(unsigned int varType): type(varType) {}
    virtual unsigned int getType() const =0;
    virtual litterale& evaluer()  {} //la methode n'est pas declarée virtuelle car inutile dans les classes feuilles à l'heure actuelle
    virtual  ~litterale();
@@ -92,6 +99,7 @@ class lComplexe: public litterale // type=4
 public:
 
     unsigned int getType() const {return type;}
+    lComplexe (string expression);
     lComplexe (litterale* ree, litterale* im)
     {
         reelle=ree;
@@ -151,7 +159,8 @@ private:
     litterale& op1;
     litterale& op2;
 public:
-    Addition(litterale& terme1, litterale& terme2):op1(terme1), op2(terme2){}
+    Addition(string expression);
+    unsigned int getType () const {return type;}
     litterale& evaluer()  {return addition(op1,op2);}
     static litterale& addition(litterale& op1, litterale& op2 ); // il est prevu que l'on puisse appeler l'operation sur autre chose que ses propres valeurs, notamment sur l'evaluation d'un descendant
 };
@@ -160,7 +169,8 @@ private:
     litterale& op1;
     litterale& op2;
 public:
-    Soustraction(litterale& terme1, litterale& terme2):op1(terme1), op2(terme2) {}
+    Soustraction(string expression);
+    unsigned int getType () const {return type;}
     litterale& evaluer() {return soustraction(op1,op2);}
     static litterale& soustraction(litterale& op1, litterale& op2);
 };
@@ -169,7 +179,8 @@ private:
     litterale& op1;
     litterale& op2;
 public:
-    Multiplication(litterale& terme1, litterale& terme2):op1(terme1),op2(terme2) {}
+    Multiplication(string expression);
+    unsigned int getType () const {return type;}
     litterale& evaluer()  {return multiplication(op1,op2);}
     static litterale& multiplication(litterale& op1, litterale& op2);
 };
@@ -178,7 +189,8 @@ private:
     litterale& op1;
     litterale& op2;
 public:
-    Division(litterale& terme1, litterale& terme2): op1(terme1),op2(terme2) {}
+    Division(string expression);
+    unsigned int getType () const {return type;}
     litterale& evaluer()  {return division(op1,op2);}
     static litterale& division(litterale& op1, litterale& op2);
 };
@@ -244,6 +256,7 @@ public:
 
 signals:
     void modificationEtat();
+
 
 
 };
@@ -375,7 +388,8 @@ public:
     void commande(const QString& c);
 
 signals:
-    void modificationEtat();
+    //void modificationEtat();
+    void modifMessage(); // Dès qu'on modifie le message de la pile (opération effectuée dont les littérales complexes et rationnelle) , le signal est appelé
 };
 
 
