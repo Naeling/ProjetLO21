@@ -60,17 +60,11 @@ mainWindow::mainWindow()
 
     box= new QLineEdit; //c'est la ligne d'affichage du resultat
 
-
-    message= new QDialog; // A modifier en QDialog dans le reste du code
-    boitier= new QTabWidget;
     resultBox= new QTableWidget(pile->getNbLitteralesToAffiche(),1);
     for(unsigned int i=pile->getNbLitteralesToAffiche();i>0;i--){
 
            resultBox->setItem(i-1,0,new QTableWidgetItem(""));
        }
-
-    //pave->addWidget(enter,3,0);
-    //pave->addWidget(correction,0,0);
 
 
     // pavé opérateur
@@ -101,12 +95,26 @@ mainWindow::mainWindow()
     clavier_cliquable->addLayout(pave_ope);
 
     // à finir : mettre en ligne le resultat, 
-    global= new QHBoxLayout;
-    global-> addLayout(numberBox,0,0, 2,1);
-    global-> addWidget(resultBox,0,1);
-    global-> addLayout(pave,0,2);
-    //boitier->addTab(resultBox);
+    global= new QGridLayout;
+    global-> addWidget(box,0,0,1,2);
+    global-> addLayout(clavier_cliquable,1,0,1,2);
+    global-> addWidget(resultBox,0,2,2,2);
+    global-> addWidget(enter,2,2);
+    global-> addWidget(correction,2,3);
+
     setLayout(global);
+
+    // Seconde fenetre : message
+    message= new QDialog; // Message sous forme d'une nouvelle fenetre qui se lance quand y'a un commentaire
+    message->setGeometry(40,20,300,200);
+    total= new QVBoxLayout;
+    ligne_message= new QLineEdit(message);
+    valider_message= new QPushButton("OK",message);
+    total->addWidget(ligne_message);
+    total->addWidget(valider_message);
+    message->setLayout(total);
+
+
 
 
 
@@ -130,6 +138,8 @@ mainWindow::mainWindow()
     QObject::connect(enter, SIGNAL(clicked()), this, SLOT(slot16()));
     QObject::connect(box, SIGNAL(returnPressed()),this,SLOT(slot16()));
     QObject::connect(pile,SIGNAL(modificationEtat()),this,SLOT(slot17()));
+    QObject::connect(controleur, SIGNAL(modifMessage()),this->message,SLOT(exec()));
+    QObject::connect(valider_message, SIGNAL(clicked()),this->message,SLOT(close()));
 
 
 
@@ -231,7 +241,7 @@ void mainWindow::slot16()
 void mainWindow::slot17(){ //refresh
 
     //Le message
-    message->setText((pile->getMessage()));
+    ligne_message->setText((pile->getMessage()));
     //0 à getNbLitteralToAffiche
 
     for(unsigned int i=0;i<pile->getNbLitteralesToAffiche();i++) //on parcourt toute la vue en effaçant le contenu pour le remplacer avec la boucle suivante

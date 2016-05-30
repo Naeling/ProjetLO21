@@ -640,6 +640,8 @@ bool estUnOperateur(const QString s){
 
 //fonction dont le role est de traiter
 //les expressions passées par le QLineEdit
+
+
 void Controleur::commande(const QString& c){
 
     //on suppose qu'on récupère un entier et qu'on l'empile
@@ -687,7 +689,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(littMng->addition(op2,op1)));
+                littAff->push(littMng->addLitterale(Addition::addition(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
@@ -701,7 +703,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(littMng->soustraction(op2,op1)));
+                littAff->push(littMng->addLitterale(Soustraction::soustraction(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
@@ -714,7 +716,7 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(littMng->multiplication(op2,op1)));
+                littAff->push(littMng->addLitterale(Multiplication::multiplication(op2,op1)));
                 if(littAff->top().getType()!=4){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
@@ -726,15 +728,17 @@ void Controleur::commande(const QString& c){
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(littMng->addLitterale(littMng->division(op2,op1)));
+                littAff->push(littMng->addLitterale(Division::division(op2,op1)));
                 if(littAff->top().getType()!=4){
                    littMng->removeLitterale(op1);
                    littMng->removeLitterale(op2);
                 }
+
             }
             if(c.toStdString()=="$")
             {
                 littAff->setMessage("tentative de complexe");
+                modifMessage();
                 litterale& op1=littAff->top();
                 littAff->pop();
                 litterale& op2=littAff->top();
@@ -756,11 +760,13 @@ void Controleur::commande(const QString& c){
             //littAff->setMessage("operation réalisée avec succès");
             //modificationEtat();
 
-        } else littAff->setMessage("Le nombre d'opérandes stockées dans la pile n'est pas suffisant pour réaliser l'operation");
-    }
+        } else {
+
+            littAff->setMessage("Le nombre d'opérandes stockées dans la pile n'est pas suffisant pour réaliser l'operation");
+            modifMessage();
+        }
 }
-
-
+}
 
 
 

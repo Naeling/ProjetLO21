@@ -247,6 +247,7 @@ signals:
     void modificationEtat();
 
 
+
 };
 
 
@@ -376,7 +377,8 @@ public:
     void commande(const QString& c);
 
 signals:
-    void modificationEtat();
+    //void modificationEtat();
+    void modifMessage(); // Dès qu'on modifie le message de la pile (opération effectuée dont les littérales complexes et rationnelle) , le signal est appelé
 };
 
 

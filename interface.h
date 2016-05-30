@@ -104,10 +104,14 @@ private:
     QGridLayout* pave_ope;
     QGridLayout* pave_num;
     QLineEdit* box;
-    QLineEdit* message;
+
+    QDialog* message;
+    QLineEdit* ligne_message;
+    QPushButton* valider_message;
+    QVBoxLayout* total;
+
     QTableWidget* resultBox;
     QGridLayout* global;
-    QTabWidget* boitier;
 
 
     //partie du code ou on gère les données récupérées
