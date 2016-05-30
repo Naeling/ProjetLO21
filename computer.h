@@ -156,42 +156,42 @@ private:
 
 class Addition: public litterale {
 private:
-    litterale& op1;
-    litterale& op2;
+    litterale* op1;
+    litterale* op2;
 public:
     Addition(string expression);
     unsigned int getType () const {return type;}
-    litterale& evaluer()  {return addition(op1,op2);}
+    litterale& evaluer()  {return addition(*op1,*op2);}
     static litterale& addition(litterale& op1, litterale& op2 ); // il est prevu que l'on puisse appeler l'operation sur autre chose que ses propres valeurs, notamment sur l'evaluation d'un descendant
 };
 class Soustraction: public litterale {
 private:
-    litterale& op1;
-    litterale& op2;
+    litterale* op1;
+    litterale* op2;
 public:
     Soustraction(string expression);
     unsigned int getType () const {return type;}
-    litterale& evaluer() {return soustraction(op1,op2);}
+    litterale& evaluer() {return soustraction(*op1,*op2);}
     static litterale& soustraction(litterale& op1, litterale& op2);
 };
 class Multiplication: public litterale {
 private:
-    litterale& op1;
-    litterale& op2;
+    litterale* op1;
+    litterale* op2;
 public:
     Multiplication(string expression);
     unsigned int getType () const {return type;}
-    litterale& evaluer()  {return multiplication(op1,op2);}
+    litterale& evaluer()  {return multiplication(*op1,*op2);}
     static litterale& multiplication(litterale& op1, litterale& op2);
 };
 class Division: public litterale {
 private:
-    litterale& op1;
-    litterale& op2;
+    litterale* op1;
+    litterale* op2;
 public:
     Division(string expression);
     unsigned int getType () const {return type;}
-    litterale& evaluer()  {return division(op1,op2);}
+    litterale& evaluer()  {return division(*op1,*op2);}
     static litterale& division(litterale& op1, litterale& op2);
 };
 

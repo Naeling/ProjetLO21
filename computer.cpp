@@ -21,6 +21,7 @@ litterale& Addition::addition(litterale& op1, litterale& op2) {
     if(op1.getType()==1) {
         if(op2.getType()==1)
         {
+            cout<<"valeur de l'entier créé" <<dynamic_cast<const lEntiere&>(op2).getValeur()+dynamic_cast<const lEntiere&>(op1).getValeur();
             return *(new lEntiere(dynamic_cast<const lEntiere&>(op2).getValeur()+dynamic_cast<const lEntiere&>(op1).getValeur()));
         }
 
@@ -484,22 +485,23 @@ unsigned int traitement(string expression) {
     cout<< "operateur correspondant=" <<expression[i]<< "\n";
     if (operateur==true) return i; else  return  0;
 }
+void test(int afficher){
+    cout<<afficher;
+}
 
-
-Addition::Addition(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0)) {
+Addition::Addition(string expression) {
     type=5;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
     unsigned int taille= expression.size();
 
     char* copie= (char*)expression.c_str();
     char* dest1= new char[test-1];
-    char* dest2= new char[taille-test];
     //copie des test-1 premier caracteres dans la chaine op1.
 
-    char* str1=strncpy(dest1,copie, (test-1)*sizeof(char));
+    char* str1=strncpy(dest1,copie, (test)*sizeof(char));
     string sOp1(str1); //il existe un constructeur de string qui prend en parametre un char * et qui fait la conversion automatique
-    char* str2=strncpy(dest2,copie, (taille-test)*sizeof(char));
-    string sOp2(str2);
+
+    string sOp2=expression.substr(test+1,taille-test);
     //reste à tester si op1 et op2 sont des composites ou des litterales
 
     unsigned int test1= traitement(sOp1);
@@ -507,49 +509,47 @@ Addition::Addition(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0
 
     if(test1==0) { // alors on est sur une feuille
         if(estUnReel(sOp1))
-            op1= *new lReelle(atof(sOp1.c_str()));
-        if(estUnEntier(sOp1))
-            op1= *new lEntiere(atoi(sOp1.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp1[test1]) {
-            case '+': op1= *new Addition(sOp1);
-            case '-': op1= *new Soustraction(sOp1);
-            case '*': op1= *new Multiplication(sOp1);
-            case '/': op1= *new Division(sOp1);
-            case '$': op1= *new lComplexe(sOp1);
+            op1= new lReelle(atof(sOp1.c_str()));
+        else {
+        if(estUnEntier(sOp1)) {
+            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
+        }
         }
     }
+    if(sOp1[test1]=='+')  op1= new Addition(sOp1);
+    if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
+    if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
+    if(sOp1[test1]=='/')  op1= new Division(sOp1);
+    if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
+
     if(test2==0) { // alors on est sur une feuille
         if(estUnReel(sOp2))
-            op2= *new lReelle(atof(sOp2.c_str()));
-        if(estUnEntier(sOp2))
-            op2= *new lEntiere(atoi(sOp2.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp2[test2]) {
-            case '+': op2= *new Addition(sOp2);
-            case '-': op2= *new Soustraction(sOp2);
-            case '*': op2= *new Multiplication(sOp2);
-            case '/': op2= *new Division(sOp2);
-            case '$': op2= *new lComplexe(sOp2);
+            op2= new lReelle(atof(sOp2.c_str()));
+        else {
+        if(estUnEntier(sOp2)) {
+            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
         }
     }
+    }
+    if(sOp2[test2]=='+') op2= new Addition(sOp2);
+    if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
+    if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
+    if(sOp2[test2]=='/') op2= new Division(sOp2);
+    if(sOp2[test2]=='$') op2= new lComplexe(sOp2);
 }
-Soustraction::Soustraction(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0)) {
+Soustraction::Soustraction(string expression) {
     type=6;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
     unsigned int taille= expression.size();
 
     char* copie= (char*)expression.c_str();
     char* dest1= new char[test-1];
-    char* dest2= new char[taille-test];
     //copie des test-1 premier caracteres dans la chaine op1.
 
-    char* str1=strncpy(dest1,copie, (test-1)*sizeof(char));
+    char* str1=strncpy(dest1,copie, (test)*sizeof(char));
     string sOp1(str1); //il existe un constructeur de string qui prend en parametre un char * et qui fait la conversion automatique
-    char* str2=strncpy(dest2,copie, (taille-test)*sizeof(char));
-    string sOp2(str2);
+
+    string sOp2=expression.substr(test+1,taille-test);
     //reste à tester si op1 et op2 sont des composites ou des litterales
 
     unsigned int test1= traitement(sOp1);
@@ -557,49 +557,49 @@ Soustraction::Soustraction(string expression):op1(*new lEntiere(0)), op2(*new lE
 
     if(test1==0) { // alors on est sur une feuille
         if(estUnReel(sOp1))
-            op1= *new lReelle(atof(sOp1.c_str()));
-        if(estUnEntier(sOp1))
-            op1= *new lEntiere(atoi(sOp1.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp1[test1]) {
-            case '+': op1= *new Addition(sOp1);
-            case '-': op1= *new Soustraction(sOp1);
-            case '*': op1= *new Multiplication(sOp1);
-            case '/': op1= *new Division(sOp1);
-            case '$': op1= *new lComplexe(sOp1);
+            op1= new lReelle(atof(sOp1.c_str()));
+        else {
+        if(estUnEntier(sOp1)) {
+            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
+        }
         }
     }
+    if(sOp1[test1]=='+')  op1= new Addition(sOp1);
+    if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
+    if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
+    if(sOp1[test1]=='/')  op1= new Division(sOp1);
+    if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
+
     if(test2==0) { // alors on est sur une feuille
         if(estUnReel(sOp2))
-            op2= *new lReelle(atof(sOp2.c_str()));
-        if(estUnEntier(sOp2))
-            op2= *new lEntiere(atoi(sOp2.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp2[test2]) {
-            case '+': op2= *new Addition(sOp2);
-            case '-': op2= *new Soustraction(sOp2);
-            case '*': op2= *new Multiplication(sOp2);
-            case '/': op2= *new Division(sOp2);
-            case '$': op2= *new lComplexe(sOp2);
+            op2= new lReelle(atof(sOp2.c_str()));
+        else {
+        if(estUnEntier(sOp2)) {
+            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
         }
     }
+    }
+    if(sOp2[test2]=='+') op2= new Addition(sOp2);
+    if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
+    if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
+    if(sOp2[test2]=='/') op2= new Division(sOp2);
+    if(sOp2[test2]=='$') op2= new lComplexe(sOp2);
 }
-Multiplication::Multiplication(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0)) {
+
+
+Multiplication::Multiplication(string expression) {
     type=7;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
     unsigned int taille= expression.size();
 
     char* copie= (char*)expression.c_str();
     char* dest1= new char[test-1];
-    char* dest2= new char[taille-test];
     //copie des test-1 premier caracteres dans la chaine op1.
 
-    char* str1=strncpy(dest1,copie, (test-1)*sizeof(char));
+    char* str1=strncpy(dest1,copie, (test)*sizeof(char));
     string sOp1(str1); //il existe un constructeur de string qui prend en parametre un char * et qui fait la conversion automatique
-    char* str2=strncpy(dest2,copie, (taille-test)*sizeof(char));
-    string sOp2(str2);
+
+    string sOp2=expression.substr(test+1,taille-test);
     //reste à tester si op1 et op2 sont des composites ou des litterales
 
     unsigned int test1= traitement(sOp1);
@@ -607,49 +607,47 @@ Multiplication::Multiplication(string expression):op1(*new lEntiere(0)), op2(*ne
 
     if(test1==0) { // alors on est sur une feuille
         if(estUnReel(sOp1))
-            op1= *new lReelle(atof(sOp1.c_str()));
-        if(estUnEntier(sOp1))
-            op1= *new lEntiere(atoi(sOp1.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp1[test1]) {
-            case '+': op1= *new Addition(sOp1);
-            case '-': op1= *new Soustraction(sOp1);
-            case '*': op1= *new Multiplication(sOp1);
-            case '/': op1= *new Division(sOp1);
-            case '$': op1= *new lComplexe(sOp1);
+            op1= new lReelle(atof(sOp1.c_str()));
+        else {
+        if(estUnEntier(sOp1)) {
+            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
+        }
         }
     }
+    if(sOp1[test1]=='+')  op1= new Addition(sOp1);
+    if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
+    if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
+    if(sOp1[test1]=='/')  op1= new Division(sOp1);
+    if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
+
     if(test2==0) { // alors on est sur une feuille
         if(estUnReel(sOp2))
-            op2= *new lReelle(atof(sOp2.c_str()));
-        if(estUnEntier(sOp2))
-            op2= *new lEntiere(atoi(sOp2.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp2[test2]) {
-            case '+': op2= *new Addition(sOp2);
-            case '-': op2= *new Soustraction(sOp2);
-            case '*': op2= *new Multiplication(sOp2);
-            case '/': op2= *new Division(sOp2);
-            case '$': op2= *new lComplexe(sOp2);
+            op2= new lReelle(atof(sOp2.c_str()));
+        else {
+        if(estUnEntier(sOp2)) {
+            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
         }
     }
+    }
+    if(sOp2[test2]=='+') op2= new Addition(sOp2);
+    if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
+    if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
+    if(sOp2[test2]=='/') op2= new Division(sOp2);
+    if(sOp2[test2]=='$') op2= new lComplexe(sOp2);
 }
-Division::Division(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0)) {
+Division::Division(string expression) {
     type=8;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
     unsigned int taille= expression.size();
 
     char* copie= (char*)expression.c_str();
     char* dest1= new char[test-1];
-    char* dest2= new char[taille-test];
     //copie des test-1 premier caracteres dans la chaine op1.
 
-    char* str1=strncpy(dest1,copie, (test-1)*sizeof(char));
+    char* str1=strncpy(dest1,copie, (test)*sizeof(char));
     string sOp1(str1); //il existe un constructeur de string qui prend en parametre un char * et qui fait la conversion automatique
-    char* str2=strncpy(dest2,copie, (taille-test)*sizeof(char));
-    string sOp2(str2);
+
+    string sOp2=expression.substr(test+1,taille-test);
     //reste à tester si op1 et op2 sont des composites ou des litterales
 
     unsigned int test1= traitement(sOp1);
@@ -657,35 +655,35 @@ Division::Division(string expression):op1(*new lEntiere(0)), op2(*new lEntiere(0
 
     if(test1==0) { // alors on est sur une feuille
         if(estUnReel(sOp1))
-            op1= *new lReelle(atof(sOp1.c_str()));
-        if(estUnEntier(sOp1))
-            op1= *new lEntiere(atoi(sOp1.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp1[test1]) {
-            case '+': op1= *new Addition(sOp1);
-            case '-': op1= *new Soustraction(sOp1);
-            case '*': op1= *new Multiplication(sOp1);
-            case '/': op1= *new Division(sOp1);
-            case '$': op1= *new lComplexe(sOp1);
+            op1= new lReelle(atof(sOp1.c_str()));
+        else {
+        if(estUnEntier(sOp1)) {
+            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
+        }
         }
     }
+    if(sOp1[test1]=='+')  op1= new Addition(sOp1);
+    if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
+    if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
+    if(sOp1[test1]=='/')  op1= new Division(sOp1);
+    if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
+
     if(test2==0) { // alors on est sur une feuille
         if(estUnReel(sOp2))
-            op2= *new lReelle(atof(sOp2.c_str()));
-        if(estUnEntier(sOp2))
-            op2= *new lEntiere(atoi(sOp2.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp2[test2]) {
-            case '+': op2= *new Addition(sOp2);
-            case '-': op2= *new Soustraction(sOp2);
-            case '*': op2= *new Multiplication(sOp2);
-            case '/': op2= *new Division(sOp2);
-            case '$': op2= *new lComplexe(sOp2);
+            op2= new lReelle(atof(sOp2.c_str()));
+        else {
+        if(estUnEntier(sOp2)) {
+            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
         }
     }
+    }
+    if(sOp2[test2]=='+') op2= new Addition(sOp2);
+    if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
+    if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
+    if(sOp2[test2]=='/') op2= new Division(sOp2);
+    if(sOp2[test2]=='$') op2= new lComplexe(sOp2);
 }
+
 lComplexe::lComplexe(string expression) {
     type=4;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
@@ -693,13 +691,12 @@ lComplexe::lComplexe(string expression) {
 
     char* copie= (char*)expression.c_str();
     char* dest1= new char[test-1];
-    char* dest2= new char[taille-test];
     //copie des test-1 premier caracteres dans la chaine op1.
 
-    char* str1=strncpy(dest1,copie, (test-1)*sizeof(char));
+    char* str1=strncpy(dest1,copie, (test)*sizeof(char));
     string sOp1(str1); //il existe un constructeur de string qui prend en parametre un char * et qui fait la conversion automatique
-    char* str2=strncpy(dest2,copie, (taille-test)*sizeof(char));
-    string sOp2(str2);
+
+    string sOp2=expression.substr(test+1,taille-test);
     //reste à tester si op1 et op2 sont des composites ou des litterales
 
     unsigned int test1= traitement(sOp1);
@@ -708,36 +705,32 @@ lComplexe::lComplexe(string expression) {
     if(test1==0) { // alors on est sur une feuille
         if(estUnReel(sOp1))
             reelle= new lReelle(atof(sOp1.c_str()));
-        if(estUnEntier(sOp1))
-            reelle= new lEntiere(atoi(sOp1.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp1[test1]) {
-            case '+': reelle= new Addition(sOp1);
-            case '-': reelle= new Soustraction(sOp1);
-            case '*': reelle= new Multiplication(sOp1);
-            case '/': reelle= new Division(sOp1);
-            case '$': reelle= new lComplexe(sOp1);
+        else {
+        if(estUnEntier(sOp1)) {
+            reelle= new lEntiere(stoi(sOp1));// throw "erreur";}
+        }
         }
     }
+    if(sOp1[test1]=='+')  reelle= new Addition(sOp1);
+    if(sOp1[test1]=='-')  reelle= new Soustraction(sOp1);
+    if(sOp1[test1]=='*')  reelle= new Multiplication(sOp1);
+    if(sOp1[test1]=='/')  reelle= new Division(sOp1);
+    if(sOp1[test1]=='$')  reelle= new lComplexe(sOp1);
+
     if(test2==0) { // alors on est sur une feuille
         if(estUnReel(sOp2))
             imaginaire= new lReelle(atof(sOp2.c_str()));
-        if(estUnEntier(sOp2))
-            imaginaire= new lEntiere(atoi(sOp2.c_str()));
-    }
-    else { //on est sur un composite
-        switch(sOp2[test2]) {
-            case '+': imaginaire= new Addition(sOp2);
-            case '-': imaginaire= new Soustraction(sOp2);
-            case '*': imaginaire= new Multiplication(sOp2);
-            case '/': imaginaire= new Division(sOp2);
-            case '$': imaginaire= new lComplexe(sOp2);
+        else {
+        if(estUnEntier(sOp2)) {
+            imaginaire= new lEntiere(stoi(sOp2));// throw "erreur";}
         }
     }
-
-
-
+    }
+    if(sOp2[test2]=='+') imaginaire= new Addition(sOp2);
+    if(sOp2[test2]=='-') imaginaire= new Soustraction(sOp2);
+    if(sOp2[test2]=='*') imaginaire= new Multiplication(sOp2);
+    if(sOp2[test2]=='/') imaginaire= new Division(sOp2);
+    if(sOp2[test2]=='$') imaginaire= new lComplexe(sOp2);
 }
 
 
@@ -956,147 +949,157 @@ void Controleur::commande(const QString& c){
 
     //on suppose qu'on récupère un entier et qu'on l'empile
     //créé et empile la nouvelle littérale sur la pile
-    if(estUnNombre(c))   {
-        log->push(*littAff); //empilement de la pile dans l'historique
-        if(c.toInt()) littAff->push(littMng->addLitterale(c.toInt()));
-        else littAff->push(littMng->addLitterale(c.toFloat()));
-    }
-    //si on a saisit un opérateur alors on depile deux littérales, on fait le calcul et on empile le résultat
-    if(estUnOperateur(c))
-    {
+    if(estUnNombre(c)||estUnOperateur(c)){
+        if(estUnNombre(c))   {
 
-        log->push(*littAff); //empilement de la pile dans l'historique en vue d'un changement d'état
-        if(c.toStdString()=="UNDO" && !log->estVide()) {
-
+            log->push(*littAff); //empilement de la pile dans l'historique
+            if(c.toInt()) littAff->push(littMng->addLitterale(c.toInt()));
+            else littAff->push(littMng->addLitterale(c.toFloat()));
         }
-        if(littAff->taille()>=1)
+        //si on a saisit un opérateur alors on depile deux littérales, on fait le calcul et on empile le résultat
+        if(estUnOperateur(c))
         {
-            if(c.toStdString()=="DROP") {
-                litterale& detruire=littAff->top();
-                littAff->pop();
-                littMng->removeLitterale(detruire);
+            log->push(*littAff); //empilement de la pile dans l'historique en vue d'un changement d'état
+            if(c.toStdString()=="UNDO" && !log->estVide()) {
+
             }
-            if(c.toStdString()=="CLEAR") {
-                while(!littAff->estVide()) {
-                   litterale& detruire=littAff->top();
-                   littAff->pop();
-                   littMng->removeLitterale(detruire);
+            if(littAff->taille()>=1)
+            {
+                if(c.toStdString()=="DROP") {
+                    litterale& detruire=littAff->top();
+                    littAff->pop();
+                    littMng->removeLitterale(detruire);
+                }
+                if(c.toStdString()=="CLEAR") {
+                    while(!littAff->estVide()) {
+                       litterale& detruire=littAff->top();
+                       littAff->pop();
+                       littMng->removeLitterale(detruire);
+                    }
+                }
+                if(c.toStdString()=="DUP") { //NOTE: on ne duplique pas la litterale dans l'expressionManager
+                    litterale& copie=littAff->top();
+                    littAff->push(copie);
                 }
             }
-            if(c.toStdString()=="DUP") { //NOTE: on ne duplique pas la litterale dans l'expressionManager
-                litterale& copie=littAff->top();
-                littAff->push(copie);
-            }
-        }
 
-        //on teste si on a au moins deux opérateurs
-        if(littAff->taille()>=2)
-        {
-            if(c.toStdString()=="+")
+            //on teste si on a au moins deux opérateurs
+            if(littAff->taille()>=2)
             {
+                if(c.toStdString()=="+")
+                {
 
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(littMng->addLitterale(Addition::addition(op2,op1)));
-                if(littAff->top().getType()!=4){
-                  littMng->removeLitterale(op1);
-                  littMng->removeLitterale(op2);
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(littMng->addLitterale(Addition::addition(op2,op1)));
+                    if(littAff->top().getType()!=4){
+                      littMng->removeLitterale(op1);
+                      littMng->removeLitterale(op2);
+                    }
+
+
                 }
+                if(c.toStdString()=="-")
+                {
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(littMng->addLitterale(Soustraction::soustraction(op2,op1)));
+                    if(littAff->top().getType()!=4){
+                      littMng->removeLitterale(op1);
+                      littMng->removeLitterale(op2);
+                    }
 
-
-            }
-            if(c.toStdString()=="-")
-            {
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(littMng->addLitterale(Soustraction::soustraction(op2,op1)));
-                if(littAff->top().getType()!=4){
-                  littMng->removeLitterale(op1);
-                  littMng->removeLitterale(op2);
                 }
-
-            }
-            if(c.toStdString()=="*")
-            {
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(littMng->addLitterale(Multiplication::multiplication(op2,op1)));
-                if(littAff->top().getType()!=4){
-                  littMng->removeLitterale(op1);
-                  littMng->removeLitterale(op2);
+                if(c.toStdString()=="*")
+                {
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(littMng->addLitterale(Multiplication::multiplication(op2,op1)));
+                    if(littAff->top().getType()!=4){
+                      littMng->removeLitterale(op1);
+                      littMng->removeLitterale(op2);
+                    }
                 }
-            }
-            if(c.toStdString()=="/")
-            {
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(littMng->addLitterale(Division::division(op2,op1)));
-                if(littAff->top().getType()!=4){
-                   littMng->removeLitterale(op1);
-                   littMng->removeLitterale(op2);
-                }
+                if(c.toStdString()=="/")
+                {
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(littMng->addLitterale(Division::division(op2,op1)));
+                    if(littAff->top().getType()!=4){
+                       littMng->removeLitterale(op1);
+                       littMng->removeLitterale(op2);
+                    }
 
-            }
-            if(c.toStdString()=="$")
-            {
-                littAff->setMessage("tentative de complexe");
+                }
+                if(c.toStdString()=="$")
+                {
+                    littAff->setMessage("tentative de complexe");
+                    modifMessage();
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(littMng->addLitterale(op2,op1));
+                    //on ne detruit pas les litterales qui font partie de la nouvelle littérale complexe
+                    //car la littérale complexe pointe sur ces littérales
+                    //littMng->removeLitterale(op1);
+                    //littMng->removeLitterale(op2);
+                }
+                if(c.toStdString()=="SWAP") {
+                    litterale& op1=littAff->top();
+                    littAff->pop();
+                    litterale& op2=littAff->top();
+                    littAff->pop();
+                    littAff->push(op1);
+                    littAff->push(op2);
+                }
+                //littAff->setMessage("operation réalisée avec succès");
+                //modificationEtat();
+
+            } else {
+
+                littAff->setMessage("Le nombre d'opérandes stockées dans la pile n'est pas suffisant pour réaliser l'operation");
                 modifMessage();
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(littMng->addLitterale(op2,op1));
-                //on ne detruit pas les litterales qui font partie de la nouvelle littérale complexe
-                //car la littérale complexe pointe sur ces littérales
-                //littMng->removeLitterale(op1);
-                //littMng->removeLitterale(op2);
             }
-            if(c.toStdString()=="SWAP") {
-                litterale& op1=littAff->top();
-                littAff->pop();
-                litterale& op2=littAff->top();
-                littAff->pop();
-                littAff->push(op1);
-                littAff->push(op2);
-            }
-            //littAff->setMessage("operation réalisée avec succès");
-            //modificationEtat();
-
-        } else {
-
-            littAff->setMessage("Le nombre d'opérandes stockées dans la pile n'est pas suffisant pour réaliser l'operation");
-            modifMessage();
         }
-}
+    } else {
     //la deuxieme partie traite les litterales expressions:
     //on suppose à ce stade que ce qui a été passé à la commande est une expression
     string test=c.toStdString();
-
-    if (c[traitement(test)]=='+'){
-
-            Addition resultat(c.toStdString());
-            littAff->push(littMng->addLitterale(resultat.evaluer()));
+    unsigned int testTraitement= traitement(test);
+    if (c[testTraitement]=='+'){
+            Addition resultat(test);
+            littAff->push(littMng->addLitterale(resultat.evaluer()));            
         }
-    if(c[traitement(test)]=='-') {
+    if(c[testTraitement]=='-') {
+
             Soustraction resultat(c.toStdString());
             littAff->push(littMng->addLitterale(resultat.evaluer()));
+
         }
-    if(c[traitement(test)]=='*') {
+    if(c[testTraitement]=='*') {
             Multiplication resultat(c.toStdString());
             littAff->push(littMng->addLitterale(resultat.evaluer()));
+
         }
-    if(c[traitement(test)]=='/') {
+    if(c[testTraitement]=='/') {
             Division resultat(c.toStdString());
             littAff->push(littMng->addLitterale(resultat.evaluer()));
         }
+    if(c[testTraitement]=='$') {
+            lComplexe resultat(c.toStdString());
+            littAff->push(littMng->addLitterale(resultat.evaluer()));
+    }
+
+}
 }
 
 
