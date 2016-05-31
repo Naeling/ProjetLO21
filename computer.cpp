@@ -508,14 +508,14 @@ Addition::Addition(string expression) {
     unsigned int test2= traitement(sOp2);
 
     if(test1==0) { // alors on est sur une feuille
-        if(estUnReel(sOp1))
-            op1= new lReelle(atof(sOp1.c_str()));
-        else {
-        if(estUnEntier(sOp1)) {
-            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
-        }
-        }
+        if(estUnEntier(sOp1))
+                op1= new lEntiere(stoi(sOp1));
+            else
+                op1= new lReelle(stof(sOp1));// throw "erreur";}
+
     }
+    if(sOp1[0]=='(')  {sOp1=sOp1.substr(1,sOp1.size()-2);
+                        test1--;}
     if(sOp1[test1]=='+')  op1= new Addition(sOp1);
     if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
     if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
@@ -523,20 +523,20 @@ Addition::Addition(string expression) {
     if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
 
     if(test2==0) { // alors on est sur une feuille
-        if(estUnReel(sOp2))
-            op2= new lReelle(atof(sOp2.c_str()));
-        else {
-        if(estUnEntier(sOp2)) {
-            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
-        }
+        if(estUnEntier(sOp2))
+                op2= new lEntiere(stoi(sOp2));
+            else
+                op2= new lReelle(stof(sOp2));// throw "erreur";} 
     }
-    }
+    if(sOp2[0]=='(') { sOp2=sOp2.substr(1,sOp2.size()-2);
+                        test2--;}
     if(sOp2[test2]=='+') op2= new Addition(sOp2);
     if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
     if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
     if(sOp2[test2]=='/') op2= new Division(sOp2);
     if(sOp2[test2]=='$') op2= new lComplexe(sOp2);
 }
+
 Soustraction::Soustraction(string expression) {
     type=6;
     unsigned int test=traitement(expression); //pour connaitre l'endroit où on doit faire la coupure
@@ -556,14 +556,14 @@ Soustraction::Soustraction(string expression) {
     unsigned int test2= traitement(sOp2);
 
     if(test1==0) { // alors on est sur une feuille
-        if(estUnReel(sOp1))
-            op1= new lReelle(atof(sOp1.c_str()));
-        else {
-        if(estUnEntier(sOp1)) {
-            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
-        }
-        }
+        if(estUnEntier(sOp1))
+                op1= new lEntiere(stoi(sOp1));
+            else
+                op1= new lReelle(stof(sOp1));// throw "erreur";}
+
     }
+    if(sOp1[0]=='(')  {sOp1=sOp1.substr(1,sOp1.size()-2);
+                        test1--;}
     if(sOp1[test1]=='+')  op1= new Addition(sOp1);
     if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
     if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
@@ -571,14 +571,12 @@ Soustraction::Soustraction(string expression) {
     if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
 
     if(test2==0) { // alors on est sur une feuille
-        if(estUnReel(sOp2))
-            op2= new lReelle(atof(sOp2.c_str()));
-        else {
-        if(estUnEntier(sOp2)) {
-            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
-        }
-    }
-    }
+        if(estUnEntier(sOp2))
+                op2= new lEntiere(stoi(sOp2));
+            else
+                op2= new lReelle(stof(sOp2));// throw "erreur";}
+    }if(sOp2[0]=='(') { sOp2=sOp2.substr(1,sOp2.size()-2);
+        test2--;}
     if(sOp2[test2]=='+') op2= new Addition(sOp2);
     if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
     if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
@@ -606,14 +604,13 @@ Multiplication::Multiplication(string expression) {
     unsigned int test2= traitement(sOp2);
 
     if(test1==0) { // alors on est sur une feuille
-        if(estUnReel(sOp1))
-            op1= new lReelle(atof(sOp1.c_str()));
-        else {
-        if(estUnEntier(sOp1)) {
-            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
-        }
-        }
-    }
+        if(estUnEntier(sOp1))
+                op1= new lEntiere(stoi(sOp1));
+            else
+                op1= new lReelle(stof(sOp1));// throw "erreur";}
+
+    } if(sOp1[0]=='(')  {sOp1=sOp1.substr(1,sOp1.size()-2);
+        test1--;}
     if(sOp1[test1]=='+')  op1= new Addition(sOp1);
     if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
     if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
@@ -621,14 +618,12 @@ Multiplication::Multiplication(string expression) {
     if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
 
     if(test2==0) { // alors on est sur une feuille
-        if(estUnReel(sOp2))
-            op2= new lReelle(atof(sOp2.c_str()));
-        else {
-        if(estUnEntier(sOp2)) {
-            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
-        }
-    }
-    }
+        if(estUnEntier(sOp2))
+                op2= new lEntiere(stoi(sOp2));
+            else
+                op2= new lReelle(stof(sOp2));// throw "erreur";}
+    }if(sOp2[0]=='(') { sOp2=sOp2.substr(1,sOp2.size()-2);
+        test2--;}
     if(sOp2[test2]=='+') op2= new Addition(sOp2);
     if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
     if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
@@ -654,14 +649,14 @@ Division::Division(string expression) {
     unsigned int test2= traitement(sOp2);
 
     if(test1==0) { // alors on est sur une feuille
-        if(estUnReel(sOp1))
-            op1= new lReelle(atof(sOp1.c_str()));
-        else {
-        if(estUnEntier(sOp1)) {
-            op1= new lEntiere(stoi(sOp1));// throw "erreur";}
-        }
-        }
+        if(estUnEntier(sOp1))
+                op1= new lEntiere(stoi(sOp1));
+            else
+                op1= new lReelle(stof(sOp1));// throw "erreur";}
+
     }
+    if(sOp1[0]=='(')  {sOp1=sOp1.substr(1,sOp1.size()-2);
+                        test1--;}// si on a une parenthese en debut on tronque le premier caractere et on recupere test-2 caracteres pour ne pas recuperer la parenthese de fin
     if(sOp1[test1]=='+')  op1= new Addition(sOp1);
     if(sOp1[test1]=='-')  op1= new Soustraction(sOp1);
     if(sOp1[test1]=='*')  op1= new Multiplication(sOp1);
@@ -669,14 +664,13 @@ Division::Division(string expression) {
     if(sOp1[test1]=='$')  op1= new lComplexe(sOp1);
 
     if(test2==0) { // alors on est sur une feuille
-        if(estUnReel(sOp2))
-            op2= new lReelle(atof(sOp2.c_str()));
-        else {
-        if(estUnEntier(sOp2)) {
-            op2= new lEntiere(stoi(sOp2));// throw "erreur";}
-        }
+        if(estUnEntier(sOp2))
+                op2= new lEntiere(stoi(sOp2));
+            else
+                op2= new lReelle(stof(sOp2));// throw "erreur";}
     }
-    }
+    if(sOp2[0]=='(') { sOp2=sOp2.substr(1,sOp2.size()-2);
+                        test2--;}
     if(sOp2[test2]=='+') op2= new Addition(sOp2);
     if(sOp2[test2]=='-') op2= new Soustraction(sOp2);
     if(sOp2[test2]=='*') op2= new Multiplication(sOp2);
@@ -703,14 +697,14 @@ lComplexe::lComplexe(string expression) {
     unsigned int test2= traitement(sOp2);
 
     if(test1==0) { // alors on est sur une feuille
-        if(estUnReel(sOp1))
-            reelle= new lReelle(atof(sOp1.c_str()));
-        else {
-        if(estUnEntier(sOp1)) {
-            reelle= new lEntiere(stoi(sOp1));// throw "erreur";}
-        }
-        }
+        if(estUnEntier(sOp1))
+                reelle= new lEntiere(stoi(sOp1));
+            else
+                reelle= new lReelle(stof(sOp1));// throw "erreur";}
+
     }
+    if(sOp1[0]=='(')  {sOp1=sOp1.substr(1,sOp1.size()-2);
+                        test1--;}
     if(sOp1[test1]=='+')  reelle= new Addition(sOp1);
     if(sOp1[test1]=='-')  reelle= new Soustraction(sOp1);
     if(sOp1[test1]=='*')  reelle= new Multiplication(sOp1);
@@ -718,14 +712,12 @@ lComplexe::lComplexe(string expression) {
     if(sOp1[test1]=='$')  reelle= new lComplexe(sOp1);
 
     if(test2==0) { // alors on est sur une feuille
-        if(estUnReel(sOp2))
-            imaginaire= new lReelle(atof(sOp2.c_str()));
-        else {
-        if(estUnEntier(sOp2)) {
-            imaginaire= new lEntiere(stoi(sOp2));// throw "erreur";}
-        }
-    }
-    }
+        if(estUnEntier(sOp2))
+                imaginaire= new lEntiere(stoi(sOp2));
+            else
+                imaginaire= new lReelle(stof(sOp2));// throw "erreur";}
+    }if(sOp2[0]=='(') { sOp2=sOp2.substr(1,sOp2.size()-2);
+        test2--;}
     if(sOp2[test2]=='+') imaginaire= new Addition(sOp2);
     if(sOp2[test2]=='-') imaginaire= new Soustraction(sOp2);
     if(sOp2[test2]=='*') imaginaire= new Multiplication(sOp2);
