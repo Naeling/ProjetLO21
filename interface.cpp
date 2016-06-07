@@ -1,5 +1,28 @@
 #include"interface.h"
 
+Fenetre::Fenetre()
+{
+
+    onglets = new QTabWidget(this);
+    onglets->setGeometry(40,20,600, 250);
+    // Création des pages
+    page1 = new mainWindow;
+    page2 = new variableWindow;
+    page3 = new programWindow;
+    page4 = new settingWindow;
+    // Ajout des onglets au QTabWidget
+    onglets->addTab(page1, "Calculatrice");
+    onglets->addTab(page2, "Gestion et édition des variables");
+    onglets->addTab(page3, "Gestion et édition des programmes");
+    onglets->addTab(page4, "Gestion des paramètres");
+
+    QObject::connect(page4->button_clavier, SIGNAL(clicked()),this, SLOT(desactiver_clavier()));
+    QObject::connect(page4->nb_ele, SIGNAL(returnPressed()),this, SLOT(changer_nb_el()));
+
+
+}
+
+
 settingWindow::settingWindow()
 {
     // Création des boutons et zones d'affichage
@@ -20,12 +43,8 @@ settingWindow::settingWindow()
     layout->addWidget(nb_ele);
     setLayout(layout);
 
-    // Connexion entre les boutons et les para
-    QObject::connect(button_clavier, SIGNAL(clicked()), this, SLOT(desactiver_clavier()));
-
-
-
 }
+
 
 
 
@@ -53,6 +72,10 @@ mainWindow::mainWindow()
     multiplication = new QPushButton("*");
     division= new QPushButton("/");
     complexe = new QPushButton("$");
+    swap = new QPushButton("SWAP");
+    drop = new QPushButton("DROP");
+    clear = new QPushButton ("CLEAR");
+    dup = new QPushButton ("DUP");
 
     enter= new QPushButton("Valider");
     correction= new QPushButton("Corriger");
@@ -74,6 +97,13 @@ mainWindow::mainWindow()
     pave_ope->addWidget(multiplication, 2,0);
     pave_ope->addWidget(division,2,1);
     pave_ope->addWidget(complexe,3,1);
+    pave_ope->addWidget(swap,4,0);
+    pave_ope->addWidget(drop,4,1);
+    pave_ope->addWidget(clear,5,0);
+    pave_ope->addWidget(dup,5,1);
+
+
+
 
     // pavé numérique
     pave_num= new QGridLayout; //ancien numberbox
@@ -86,7 +116,7 @@ mainWindow::mainWindow()
     pave_num->addWidget(bouton3,3,0);
     pave_num->addWidget(bouton2,3,1);
     pave_num->addWidget(bouton1,3,2);
-    pave_num->addWidget(bouton0,4,0);
+    pave_num->addWidget(bouton0,4,1);
 
 
     // clavier cliquable que l'on peut faire sauter
@@ -94,14 +124,18 @@ mainWindow::mainWindow()
     clavier_cliquable->addLayout(pave_num);
     clavier_cliquable->addLayout(pave_ope);
 
+    // boutons valider et corriger
+    valid_button = new QHBoxLayout;
+    valid_button->addWidget(enter);
+    valid_button-> addWidget(correction);
+
+
     // à finir : mettre en ligne le resultat, 
     global= new QGridLayout;
+    global-> addLayout(clavier_cliquable,0,2,2,1);
     global-> addWidget(box,0,0,1,2);
-    global-> addLayout(clavier_cliquable,1,0,1,2);
-    global-> addWidget(resultBox,0,2,2,2);
-    global-> addWidget(enter,2,2);
-    global-> addWidget(correction,2,3);
-
+    global-> addWidget(resultBox,1,0,1,2);
+    global-> addLayout(valid_button,2,2);
     setLayout(global);
 
     // Seconde fenetre : message
@@ -138,8 +172,14 @@ mainWindow::mainWindow()
     QObject::connect(enter, SIGNAL(clicked()), this, SLOT(slot16()));
     QObject::connect(box, SIGNAL(returnPressed()),this,SLOT(slot16()));
     QObject::connect(pile,SIGNAL(modificationEtat()),this,SLOT(slot17()));
-    QObject::connect(controleur, SIGNAL(modifMessage()),this->message,SLOT(exec()));
+    //QObject::connect(controleur, SIGNAL(modifMessage()),this->message,SLOT(exec()));
+    QObject::connect(controleur, SIGNAL(modifMessage()),this,SLOT(slot18()));
     QObject::connect(valider_message, SIGNAL(clicked()),this->message,SLOT(close()));
+    QObject::connect(swap, SIGNAL(clicked()), this, SLOT(slot19()));
+    QObject::connect(drop, SIGNAL(clicked()), this, SLOT(slot20()));
+    QObject::connect(clear, SIGNAL(clicked()), this, SLOT(slot21()));
+    QObject::connect(dup, SIGNAL(clicked()), this, SLOT(slot22()));
+
 
 
 
@@ -237,11 +277,16 @@ void mainWindow::slot16()
 
 }
 
+void mainWindow::slot18(){
+    ligne_message->setText(pile->getMessage());
+    this->message->exec();
+}
 
 void mainWindow::slot17(){ //refresh
 
     //Le message
-    ligne_message->setText((pile->getMessage()));
+    ligne_message->setText(pile->getMessage());
+    //if (pile->getMessage) modifMessage();
     //0 à getNbLitteralToAffiche
 
     for(unsigned int i=0;i<pile->getNbLitteralesToAffiche();i++) //on parcourt toute la vue en effaçant le contenu pour le remplacer avec la boucle suivante
@@ -279,3 +324,73 @@ void mainWindow::slot17(){ //refresh
     }
 }
 
+
+
+void Fenetre::desactiver_clavier(){
+        if (page4->button_clavier->text()=="Désactiver"){
+        page1->global->removeItem(page1->clavier_cliquable);
+        page1->clavier_cliquable->removeItem(page1->pave_num);
+        page1->clavier_cliquable->removeItem(page1->pave_ope);
+        QLayoutItem *item;
+        while ((item = page1->pave_ope->takeAt(0)) != 0) {
+             item->widget()->hide();
+        }
+        while ((item = page1->pave_num->takeAt(0)) != 0) {
+            item->widget()->hide();
+        }
+        page1->global-> removeItem(page1->valid_button);
+        page1->global-> addLayout (page1->valid_button,2,0);
+        page4->button_clavier->setText("Activer");
+        }
+        else if(page4->button_clavier->text()=="Activer"){
+            page1->global->removeItem(page1->valid_button);
+            QLayoutItem *item;
+            while ((item = page1->pave_ope->takeAt(0)) != 0) {
+                 item->widget()->show();
+
+            }
+
+            while ((item = page1->pave_num->takeAt(0)) != 0) {
+                    item->widget()->show();
+            }
+
+            page1->clavier_cliquable->addLayout(page1->pave_num);
+            page1->clavier_cliquable->addLayout(page1->pave_ope);
+            page1->global-> addLayout(page1->clavier_cliquable,0,2,2,1);
+            page1->global-> addLayout(page1->valid_button,2,2);
+
+            page4->button_clavier->setText("Désactiver");
+        }
+}
+
+void Fenetre::changer_nb_el(){
+    page1->global->removeWidget(page1->resultBox);
+    delete page1->resultBox;
+
+    page1->pile->setNbItemsToAffiche(page4->nb_ele->text().toInt());
+    page1->resultBox= new QTableWidget(page1->pile->getNbLitteralesToAffiche(),1);
+
+    for(unsigned int i=page1->pile->getNbLitteralesToAffiche();i>0;i--){
+
+           page1->resultBox->setItem(i-1,0,new QTableWidgetItem(""));
+       }
+    page1->global-> addWidget(page1->resultBox,1,0,1,2);
+
+}
+
+void mainWindow::slot19()
+{
+    controleur->commande(QString("SWAP"));
+}
+void mainWindow::slot20()
+{
+    controleur->commande(QString("DROP"));
+}
+void mainWindow::slot21()
+{
+    controleur->commande(QString("CLEAR"));
+}
+void mainWindow::slot22()
+{
+    controleur->commande(QString("DUP"));
+}

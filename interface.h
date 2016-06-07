@@ -15,15 +15,23 @@
 #include <QTableWidget>
 #include <QTabWidget>
 #include <QtWidgets>
+//#include <QSound>
+
 
 
 //Widget de type QLineEdit pour utilier des slots persos pour utiliser avec les QPushButton
 
+
+
 class variableWindow : public QWidget {
+    Q_OBJECT
+    friend class Fenetre;
 
 };
 
 class programWindow : public QWidget {
+    Q_OBJECT
+    friend class Fenetre;
 };
 
 class settingWindow : public QWidget {
@@ -32,7 +40,7 @@ class settingWindow : public QWidget {
 // -> Placer tout seul le truc des messages en attendant de faire un QDialog pour le remplacer avec un bip sonore et parametrer ensuite ce bip sonore
 // parametrer le bip sonore quand le QDialog sera créé
 // parametrer le nb d'éléments de la pile qu'on affiche
-
+    Q_OBJECT
 private :
      QVBoxLayout* layout;
      QLabel* label_clavier;
@@ -44,9 +52,10 @@ private :
 
 public :
      settingWindow();
-
+     friend class Fenetre;
+     friend class mainWindow;
 public slots :
-     //void activer_clavier;
+
      //void activer_son;
      //void para_nbEl;
 };
@@ -76,9 +85,17 @@ public slots:
     //SLOT POUR LE PASSAGE DU QLINEEDIT AU CONTROLEUR
     void slot16 ();
     void slot17 (); //refresh
+    void slot18 ();
+    void slot19 ();
+    void slot20 ();
+    void slot21 ();
+    void slot22 ();
+
 
 public:
     mainWindow();
+    friend class Fenetre;
+    friend class settingWindow;
 
 private:
     //Vue principale : clavier cliquable (pavé numérique + opérateurs) + état du calculateur
@@ -97,6 +114,12 @@ private:
     QPushButton* multiplication;
     QPushButton* division;
     QPushButton* complexe;
+    QPushButton* swap;
+    QPushButton* drop;
+    QPushButton* clear;
+    QPushButton* dup;
+
+    QHBoxLayout* valid_button;
     QPushButton* enter;
     QPushButton* correction;
 
@@ -109,6 +132,7 @@ private:
     QLineEdit* ligne_message;
     QPushButton* valider_message;
     QVBoxLayout* total;
+ //   QSound* bip;
 
     QTableWidget* resultBox;
     QGridLayout* global;
@@ -118,6 +142,25 @@ private:
     Pile* pile;
     litteraleManager* lManager;
     Controleur* controleur;
+
+signals :
+
+
+};
+
+class Fenetre : public QWidget {
+    Q_OBJECT
+private :
+    QTabWidget* onglets;
+    mainWindow* page1;
+    variableWindow* page2;
+    programWindow* page3;
+    settingWindow* page4;
+public :
+    Fenetre();
+public slots :
+    void desactiver_clavier();
+    void changer_nb_el();
 
 };
 

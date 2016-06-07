@@ -347,6 +347,7 @@ litterale& Division::division(litterale& op1, litterale&op2) {
             if(dynamic_cast<const lEntiere&>(op1).getValeur()%dynamic_cast<const lEntiere&>(op2).getValeur()==0)
                 return *(new lEntiere(dynamic_cast<const lEntiere&>(op1).getValeur()/dynamic_cast<const lEntiere&>(op2).getValeur()));
             else return *(new lRationnelle(dynamic_cast<const lEntiere&>(op1).getValeur(), dynamic_cast<const lEntiere&>(op2).getValeur()));
+
         }
         if(op2.getType()==2)
         {   //diviser c'est multiplier par l'inverse
@@ -467,8 +468,9 @@ void Pile::push(litterale& l)
 //methode pour depiler une litterale de la pile
 void Pile::pop()
 {
-    if(estVide())
+    if(estVide()){
         throw ComputerException("erreur aucune litterale à dépiler la pile est vide");
+    }
     else tab[nb--]=nullptr;
     //modificationEtat();
 }
@@ -661,21 +663,29 @@ void Controleur::commande(const QString& c){
         }
         if(littAff->taille()>=1)
         {
+            // Fonctionne pas chez moi
             if(c.toStdString()=="DROP") {
                 litterale& detruire=littAff->top();
                 littAff->pop();
                 littMng->removeLitterale(detruire);
+                littAff->setMessage("La dernière littérale entrée a été supprimée.");
+                modifMessage();
             }
+            //Fonctionne pas chez moi
             if(c.toStdString()=="CLEAR") {
                 while(!littAff->estVide()) {
                    litterale& detruire=littAff->top();
                    littAff->pop();
                    littMng->removeLitterale(detruire);
                 }
+                littAff->setMessage("La pile a été vidée. ");
+                modifMessage();
             }
             if(c.toStdString()=="DUP") { //NOTE: on ne duplique pas la litterale dans l'expressionManager
                 litterale& copie=littAff->top();
                 littAff->push(copie);
+                littAff->setMessage("La dernière littérale entrée a été dupliquée. ");
+                modifMessage();
             }
         }
 
@@ -694,7 +704,8 @@ void Controleur::commande(const QString& c){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
                 }
-
+                littAff->setMessage("Addition effectuée");
+                modifMessage();
 
             }
             if(c.toStdString()=="-")
@@ -708,10 +719,13 @@ void Controleur::commande(const QString& c){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
                 }
+                littAff->setMessage("Soustraction effectuée");
+                modifMessage();
 
             }
             if(c.toStdString()=="*")
             {
+
                 litterale& op1=littAff->top();
                 littAff->pop();
                 litterale& op2=littAff->top();
@@ -721,6 +735,9 @@ void Controleur::commande(const QString& c){
                   littMng->removeLitterale(op1);
                   littMng->removeLitterale(op2);
                 }
+                littAff->setMessage("Multiplication effectuée");
+                modifMessage();
+
             }
             if(c.toStdString()=="/")
             {
@@ -733,12 +750,14 @@ void Controleur::commande(const QString& c){
                    littMng->removeLitterale(op1);
                    littMng->removeLitterale(op2);
                 }
+                littAff->setMessage("Division effectuée");
+                modifMessage();
+
 
             }
             if(c.toStdString()=="$")
             {
-                littAff->setMessage("tentative de complexe");
-                modifMessage();
+                littAff->setMessage("");
                 litterale& op1=littAff->top();
                 littAff->pop();
                 litterale& op2=littAff->top();
@@ -748,21 +767,24 @@ void Controleur::commande(const QString& c){
                 //car la littérale complexe pointe sur ces littérales
                 //littMng->removeLitterale(op1);
                 //littMng->removeLitterale(op2);
+                littAff->setMessage("Un complexe vient d'être créée.");
+                modifMessage();
             }
             if(c.toStdString()=="SWAP") {
                 litterale& op1=littAff->top();
                 littAff->pop();
                 litterale& op2=littAff->top();
                 littAff->pop();
-                littAff->push(op1);
-                littAff->push(op2);
+                littAff->push(littMng->addLitterale(op1));
+                littAff->push(littMng->addLitterale(op2));
+                littAff->setMessage("Les deux derniers éléments ont été inversés.");
+                modifMessage();
             }
             //littAff->setMessage("operation réalisée avec succès");
             //modificationEtat();
 
         } else {
-
-            littAff->setMessage("Le nombre d'opérandes stockées dans la pile n'est pas suffisant pour réaliser l'operation");
+            littAff->setMessage("Pas assez d'opérandes");
             modifMessage();
         }
 }
